@@ -24,24 +24,25 @@ set shortmess+=c
 call plug#begin('~/.vim/plugged')
 "Apperance
 Plug 'lifepillar/vim-solarized8'
-"Plug 'vim-airline/vim-airline'
-"Plug 'vim-airline/vim-airline-themes'
 Plug 'itchyny/lightline.vim'
 Plug 'mengelbrecht/lightline-bufferline'
-"Plug 'bling/vim-bufferline'
-"Plug 'morhetz/gruvbox'
 
-"Misc
+"Misc Tools
 Plug 'vim-scripts/gitignore'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-abolish'
+Plug 'junegunn/vim-slash'
 "Plug 'w0rp/ale'
 
-"Code Selection/Navigation
+"Language Server
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'junegunn/vim-slash'
 "Plug 'kassio/neoterm'
+
+"Interface
+Plug 'liuchengxu/vista.vim'
+Plug 'liuchengxu/vim-clap'
+Plug 'voldikss/vim-floaterm'
 
 "Language specific plugs
 Plug 'fatih/vim-go', {'for': 'go'}
@@ -55,23 +56,20 @@ Plug 'posva/vim-vue', {'for': 'vue'}
 Plug 'shime/vim-livedown', {'for': 'markdown'}
 Plug 'cespare/vim-toml', {'for': 'toml'}
 
-"Experimental
-Plug 'liuchengxu/vista.vim'
-Plug 'liuchengxu/vim-clap'
 call plug#end()
 
 """"PLUGIN SETTINGS""""
-
-"let g:airline#extensions#tabline#enabled = 1
 
 "Vista (Tags)
 let g:vista_default_executive = 'coc'
 let g:vista_icon_indent = ["╰─▸ ", "├─▸ "]
 let g:vista#renderer#enable_icon = 1
 
+"Floaterm
+let g:floaterm_position = 'center'
+
 
 """"APPERANCE""""
-
 set termguicolors
 set background=dark
 colorscheme solarized8_flat
@@ -112,7 +110,6 @@ endfunc
 nnoremap <C-n> :call NumberToggle()<cr>
 
 """"MAPPINGS""""
-
 let mapleader = "\<Space>"
 nmap <C-l> :bn<CR>
 nmap <C-h> :bp<CR>
@@ -148,9 +145,12 @@ tnoremap <Esc> <C-\><C-N>
 xnoremap <expr> P '"_d"'.v:register.'P'
 
 "Open Terminal to Python
-nnoremap <silent> <f12> :terminal python3<CR>
+"nnoremap <silent> <f12> :terminal python3<CR>
+let g:floaterm_keymap_toggle = '<F12>'
+
 
 """COC - COPIED FROM GITHUB EXAMPLE """
+""" WORTH REVIEWING...
 
 set statusline^=%{coc#status()}
 " Use tab for trigger completion with characters ahead and navigate.
@@ -218,22 +218,3 @@ nmap <leader>a  <Plug>(coc-codeaction-selected)
 nmap <leader>ac  <Plug>(coc-codeaction)
 " Fix autofix problem of current line
 nmap <leader>qf  <Plug>(coc-fix-current)
-
-
-" Using CocList
-" Show all diagnostics
-"nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
-" Manage extensions
-"nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
-" Show commands
-"nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
-" Find symbol of current document
-"nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
-" Search workspace symbols
-"nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
-" Do default action for next item.
-"nnoremap <silent> <space>j  :<C-u>CocNext<CR>
-" Do default action for previous item.
-"nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
-" Resume latest coc list
-"nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
