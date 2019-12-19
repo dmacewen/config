@@ -118,6 +118,9 @@ nmap <C-h> :bp<CR>
 nmap <C-j> 10jzz
 nmap <C-k> 10kzz
 
+nmap <S-C-j> :GitGutterNextHunk<CR>zz
+nmap <S-C-k> :GitGutterPrevHunk<CR>zz
+
 "Clap Skim + FZY 'Open' Files - Git Files and Local Files
 nnoremap <Leader>o :Clap gfiles<CR>
 nnoremap <Leader>O :Clap files<CR>
@@ -136,17 +139,16 @@ nnoremap <Leader>r :Clap registers<CR>
 nnoremap <Leader>m :Clap marks<CR>
 
 "Toggle Tagbar
-nmap <C-t> :Vista!!<CR>
+nmap <F12> :Vista!!<CR>
+
+"Open Terminal in Floating Window
+let g:floaterm_keymap_toggle = '<C-t>'
 
 "neovim terminal
 tnoremap <Esc> <C-\><C-N>
 
 "Capital P for pasting without overwriting register
 xnoremap <expr> P '"_d"'.v:register.'P'
-
-"Open Terminal to Python
-"nnoremap <silent> <f12> :terminal python3<CR>
-let g:floaterm_keymap_toggle = '<F12>'
 
 
 """COC - COPIED FROM GITHUB EXAMPLE """
