@@ -37,11 +37,10 @@ Plug 'junegunn/vim-slash'
 
 "Language Server
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-"Plug 'kassio/neoterm'
 
 "Interface
 Plug 'liuchengxu/vista.vim'
-Plug 'liuchengxu/vim-clap'
+Plug 'liuchengxu/vim-clap', { 'do': function('clap#helper#build_all') }
 Plug 'voldikss/vim-floaterm'
 
 "Language specific plugs
@@ -118,12 +117,14 @@ nmap <C-h> :bp<CR>
 nmap <C-j> 10jzz
 nmap <C-k> 10kzz
 
-nmap <S-C-j> :GitGutterNextHunk<CR>zz
-nmap <S-C-k> :GitGutterPrevHunk<CR>zz
+"nmap <C-]> :GitGutterNextHunk<CR>zz
+nnoremap <S-j> :GitGutterNextHunk<CR>zz
+"nmap <C-[> :GitGutterPrevHunk<CR>zz
+nnoremap <S-k> :GitGutterPrevHunk<CR>zz
 
 "Clap Skim + FZY 'Open' Files - Git Files and Local Files
-nnoremap <Leader>o :Clap gfiles<CR>
-nnoremap <Leader>O :Clap files<CR>
+nnoremap <Leader>o :Clap files<CR>
+nnoremap <Leader>O :Clap gfiles<CR>
 
 "Clap Skim + FZY - Buffer Lines and Project Lines
 nnoremap <Leader>i :Clap blines<CR>
@@ -189,8 +190,9 @@ nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
-" Use K for show documentation in preview window
-nnoremap <silent> K :call <SID>show_documentation()<CR>
+" Use D for show documentation in preview window
+"nnoremap <silent> D :call <SID>show_documentation()<CR>
+nnoremap <C-D> :call <SID>show_documentation()<CR>
 
 function! s:show_documentation()
     if &filetype == 'vim'
