@@ -139,6 +139,9 @@ nnoremap <Leader>r :Clap registers<CR>
 "Clap Skim + FZY - Marks
 nnoremap <Leader>m :Clap marks<CR>
 
+"Clap Skim + FZY - Marks
+nnoremap <Leader>f :Clap quickfix<CR>
+
 "Toggle Tagbar
 nmap <F12> :Vista!!<CR>
 
@@ -203,8 +206,8 @@ function! s:show_documentation()
 endfunction
 
 " Remap for format selected region
-vmap <leader>f  <Plug>(coc-format-selected)
-nmap <leader>f  <Plug>(coc-format-selected)
+"vmap <leader>f  <Plug>(coc-format-selected)
+"nmap <leader>f  <Plug>(coc-format-selected)
 
 augroup mygroup
     autocmd!
