@@ -1,8 +1,10 @@
 {
     "diagnostic.errorSign": "✖",
     "diagnostic.warningSign": "⚠",
-    "diagnostic.infoSign": "ℹ",
+    "diagnostic.infoSign": "ⓘ",
     "diagnostic.hintSign": "➤",
     "python.jediEnabled": false,
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": true,
     "python.venvPath": "~/.virtualenvs"
 }

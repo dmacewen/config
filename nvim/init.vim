@@ -21,7 +21,7 @@ set shortmess+=c
 
 """"PLUGINS""""
 
-call plug#begin('~/.vim/plugged')
+call plug#begin('~/.config/nvim/plugged')
 "Apperance
 Plug 'lifepillar/vim-solarized8'
 Plug 'itchyny/lightline.vim'
@@ -37,6 +37,7 @@ Plug 'junegunn/vim-slash'
 
 "Language Server
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+"Plug 'puremourning/vimspector', {'do': './install_gadget.py --enable-c --enable-python'}
 
 "Interface
 Plug 'liuchengxu/vista.vim'
@@ -54,6 +55,10 @@ Plug 'jelera/vim-javascript-syntax', {'for': ['javascript', 'vue']}
 Plug 'posva/vim-vue', {'for': 'vue'}
 Plug 'shime/vim-livedown', {'for': 'markdown'}
 Plug 'cespare/vim-toml', {'for': 'toml'}
+Plug 'keith/swift.vim', {'for': 'swift'}
+
+"Vim in browser text boxes
+Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
 
 call plug#end()
 
@@ -67,6 +72,9 @@ let g:vista#renderer#enable_icon = 1
 "Floaterm
 let g:floaterm_position = 'center'
 
+let g:python3_host_prog = '/usr/local/bin/python3'
+let g:python_host_prog = '/usr/local/bin/python'
+"let g:vimspector_enable_mappings = 'HUMAN'
 
 """"APPERANCE""""
 set termguicolors
@@ -117,10 +125,13 @@ nmap <C-h> :bp<CR>
 nmap <C-j> 10jzz
 nmap <C-k> 10kzz
 
-"nmap <C-]> :GitGutterNextHunk<CR>zz
 nnoremap <S-j> :GitGutterNextHunk<CR>zz
-"nmap <C-[> :GitGutterPrevHunk<CR>zz
 nnoremap <S-k> :GitGutterPrevHunk<CR>zz
+
+"nnoremap <S-j> :GitGutterNextHunk<CR>zz
+nnoremap <Leader>j :lnext<CR>zz
+"nnoremap <S-k> :GitGutterPrevHunk<CR>zz
+nnoremap <Leader>k :lprev<CR>zz
 
 "Clap Skim + FZY 'Open' Files - Git Files and Local Files
 nnoremap <Leader>o :Clap files<CR>
