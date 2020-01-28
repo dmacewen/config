@@ -1,3 +1,16 @@
 coc/*
 configstore/*
 nvim/plugged/*
+
+autostart/*
+dconf/*
+enchant/*
+evolution/*
+geary/*
+gnome-initial-setup-done*
+goa-1.0/*
+gtk-3.0/*
+ibus/*
+pulse/*
+user-dirs.dirs
+user-dirs.locale
