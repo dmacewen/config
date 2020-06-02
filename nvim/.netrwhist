@@ -1,8 +1,12 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhistcnt =6
+let g:netrw_dirhistcnt =3
+let g:netrw_dirhist_3='/Users/dmacewen/Projects/scanner/scanner/tools'
+let g:netrw_dirhist_2='/Users/dmacewen/Projects/scanner/scanner/hardware'
+let g:netrw_dirhist_1='/Users/dmacewen/Projects/scanner/scanner/image_processing'
+let g:netrw_dirhist_0='/Users/dmacewen/Glass/scanner/image_processing'
+let g:netrw_dirhist_9='/Users/dmacewen/Glass/scanner/tools'
+let g:netrw_dirhist_8='/Users/dmacewen/Glass/scanner/utils'
+let g:netrw_dirhist_7='/Users/dmacewen/Glass/scanner/data_types'
 let g:netrw_dirhist_6='/Users/dmacewen/.config'
 let g:netrw_dirhist_5='/Users/dmacewen/Projects/tone/tone_colorMatch/src'
 let g:netrw_dirhist_4='/Users/dmacewen/Projects/tone/tone_sqs'
-let g:netrw_dirhist_3='/Users/dmacewen'
-let g:netrw_dirhist_2='/Users/dmacewen/.config/nvim'
-let g:netrw_dirhist_1='/Users/dmacewen/.config/.git'

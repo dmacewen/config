@@ -58,7 +58,7 @@ Plug 'cespare/vim-toml', {'for': 'toml'}
 Plug 'keith/swift.vim', {'for': 'swift'}
 
 "Vim in browser text boxes
-Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
+"Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
 
 call plug#end()
 
@@ -73,13 +73,14 @@ let g:vista#renderer#enable_icon = 1
 let g:floaterm_position = 'center'
 
 let g:python3_host_prog = '/usr/local/bin/python3'
-let g:python_host_prog = '/usr/local/bin/python'
+let g:python_host_prog = '/usr/bin/python2'
 "let g:vimspector_enable_mappings = 'HUMAN'
 
 """"APPERANCE""""
 set termguicolors
 set background=dark
-colorscheme solarized8_flat
+"colorscheme solarized8_flat
+colorscheme solarized8
 
 set showtabline=2 "Force tabline to always show
 
