@@ -1,6 +1,6 @@
 """"VIM SETTINGS""""
 
-syntax on
+"" syntax on
 filetype off                  " Required
 
 set nu
@@ -22,8 +22,19 @@ set shortmess+=c
 """"PLUGINS""""
 
 call plug#begin('~/.config/nvim/plugged')
+"Testing Telescope
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+
+"Async Task/Run
+Plug 'skywind3000/asynctasks.vim'
+Plug 'skywind3000/asyncrun.vim'
+
 "Apperance
-Plug 'lifepillar/vim-solarized8'
+Plug 'sainnhe/sonokai'
+" Plug 'rebelot/kanagawa.nvim'
+" Plug 'lifepillar/vim-solarized8'
 Plug 'itchyny/lightline.vim'
 Plug 'mengelbrecht/lightline-bufferline'
 
@@ -33,59 +44,163 @@ Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-abolish'
 Plug 'junegunn/vim-slash'
+Plug 'github/copilot.vim'
 "Plug 'w0rp/ale'
 
+"Treesitter
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
+
 "Language Server
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-"Plug 'puremourning/vimspector', {'do': './install_gadget.py --enable-c --enable-python'}
+Plug 'neovim/nvim-lspconfig'
+"
+" Autocomplete
+Plug 'hrsh7th/nvim-compe'
+set completeopt=menuone,noselect
 
 "Interface
-Plug 'liuchengxu/vista.vim'
-Plug 'liuchengxu/vim-clap', { 'do': function('clap#helper#build_all') }
 Plug 'voldikss/vim-floaterm'
 
 "Language specific plugs
-Plug 'fatih/vim-go', {'for': 'go'}
-Plug 'wting/rust.vim', {'for': 'rust'}
-Plug 'lambdatoast/elm.vim', {'for': 'elm'}
-Plug 'racer-rust/vim-racer', {'for': 'rust'}
-Plug 'elixir-lang/vim-elixir', {'for': 'elixir'}
-Plug 'slashmili/alchemist.vim', {'for': 'elixir'}
-Plug 'jelera/vim-javascript-syntax', {'for': ['javascript', 'vue']}
-Plug 'posva/vim-vue', {'for': 'vue'}
+Plug 'petRUShka/vim-opencl'
 Plug 'shime/vim-livedown', {'for': 'markdown'}
 Plug 'cespare/vim-toml', {'for': 'toml'}
-Plug 'keith/swift.vim', {'for': 'swift'}
+" Plug 'fatih/vim-go', {'for': 'go'}
+" Plug 'wting/rust.vim', {'for': 'rust'}
+" Plug 'lambdatoast/elm.vim', {'for': 'elm'}
+" Plug 'racer-rust/vim-racer', {'for': 'rust'}
+" Plug 'elixir-lang/vim-elixir', {'for': 'elixir'}
+" Plug 'slashmili/alchemist.vim', {'for': 'elixir'}
+" Plug 'jelera/vim-javascript-syntax', {'for': ['javascript', 'vue']}
+" Plug 'posva/vim-vue', {'for': 'vue'}
+" Plug 'keith/swift.vim', {'for': 'swift'}
 
 "Vim in browser text boxes
 "Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
 
 call plug#end()
 
+lua << EOF
+require'nvim-treesitter.configs'.setup {
+  highlight = { enable = true },
+  indent = { enable = true },
+  incremental_selection = { enable = true },
+  textobjects = { enable = true },
+}
+
+EOF
+
 """"PLUGIN SETTINGS""""
+" Async Task/Run
+let g:asyncrun_open = 6
+let g:asyncrun_rootmarks = ['.git', '.svn', '.root', '.project', '.hg']
+" Set Quickfix window height
+au FileType qf setlocal winheight=30
+au FileType qf setlocal winminheight=30
 
-"Vista (Tags)
-let g:vista_default_executive = 'coc'
-let g:vista_icon_indent = ["╰─▸ ", "├─▸ "]
-let g:vista#renderer#enable_icon = 1
+"Compe
+let g:compe = {}
+let g:compe.enabled = v:true
+let g:compe.autocomplete = v:true
+let g:compe.debug = v:false
+let g:compe.min_length = 1
+let g:compe.preselect = 'enable'
+let g:compe.throttle_time = 80
+let g:compe.source_timeout = 200
+let g:compe.resolve_timeout = 800
+let g:compe.incomplete_delay = 400
+let g:compe.max_abbr_width = 100
+let g:compe.max_kind_width = 100
+let g:compe.max_menu_width = 100
+let g:compe.documentation = v:true
 
-"Floaterm
-let g:floaterm_position = 'center'
+let g:compe.source = {}
+let g:compe.source.path = v:true
+let g:compe.source.buffer = v:true
+let g:compe.source.calc = v:true
+let g:compe.source.nvim_lsp = v:true
+let g:compe.source.nvim_lua = v:true
+let g:compe.source.vsnip = v:true
+let g:compe.source.ultisnips = v:true
+let g:compe.source.luasnip = v:true
+let g:compe.source.emoji = v:true
+
+""" Configure Telescope """
+lua << EOF
+require('telescope').setup {
+  defaults = {
+    pickers = {
+        git_files = { recurse_submodules = true },
+    },
+  }
+}
+EOF
+
+
+
+""""" Compe Tab Completion 
+lua << EOF
+local t = function(str)
+  return vim.api.nvim_replace_termcodes(str, true, true, true)
+end
+
+local check_back_space = function()
+    local col = vim.fn.col('.') - 1
+    return col == 0 or vim.fn.getline('.'):sub(col, col):match('%s') ~= nil
+end
+
+-- Use (s-)tab to:
+--- move to prev/next item in completion menuone
+_G.tab_complete = function()
+  if vim.fn.pumvisible() == 1 then
+    return t "<C-n>"
+  elseif check_back_space() then
+    return t "<Tab>"
+  else
+    return vim.fn['compe#complete']()
+  end
+end
+_G.s_tab_complete = function()
+  if vim.fn.pumvisible() == 1 then
+    return t "<C-p>"
+  else
+    -- If <S-Tab> is not working in your terminal, change it to <C-h>
+    return t "<S-Tab>"
+  end
+end
+
+vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", {expr = true})
+vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
+vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
+vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
+EOF
+
+""" END Compe Tab completion
+
 
 let g:python3_host_prog = '/usr/local/bin/python3'
 let g:python_host_prog = '/usr/bin/python2'
-"let g:vimspector_enable_mappings = 'HUMAN'
 
 """"APPERANCE""""
-set termguicolors
-set background=dark
-"colorscheme solarized8_flat
-colorscheme solarized8
+
+"" set termguicolors
+"" set background=dark
+"" colorscheme solarized8
+
+" Important!!
+if has('termguicolors')
+  set termguicolors
+endif
+
+" The configuration options should be placed before `colorscheme sonokai`.
+let g:sonokai_style = 'shusia'
+let g:sonokai_better_performance = 1
+colorscheme sonokai
+
 
 set showtabline=2 "Force tabline to always show
 
 let g:lightline = {
-            \ 'colorscheme': 'solarized',
+            \ 'colorscheme': 'sonokai',
             \ 'active': {
             \   'left': [ [ 'mode', 'paste' ],
             \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
@@ -106,7 +221,7 @@ let g:lightline = {
 
 """"FUNCTIONS""""
 
-"Turn relative numbering on and off
+"" Turn relative numbering on and off
 function! NumberToggle()
     if(&relativenumber == 1)
         set norelativenumber
@@ -122,40 +237,36 @@ let mapleader = "\<Space>"
 nmap <C-l> :bn<CR>
 nmap <C-h> :bp<CR>
 
-"Jump 10 lines at a time
+"" Jump 10 lines at a time
 nmap <C-j> 10jzz
 nmap <C-k> 10kzz
 
 nnoremap <S-j> :GitGutterNextHunk<CR>zz
 nnoremap <S-k> :GitGutterPrevHunk<CR>zz
 
-"nnoremap <S-j> :GitGutterNextHunk<CR>zz
 nnoremap <Leader>j :lnext<CR>zz
-"nnoremap <S-k> :GitGutterPrevHunk<CR>zz
 nnoremap <Leader>k :lprev<CR>zz
 
-"Clap Skim + FZY 'Open' Files - Git Files and Local Files
-nnoremap <Leader>o :Clap files<CR>
-nnoremap <Leader>O :Clap gfiles<CR>
+nnoremap gd <C-]>
+nnoremap gi <cmd>lua vim.lsp.buf.implementation()<CR>
+nnoremap gr <cmd>lua vim.lsp.buf.references()<CR>
 
-"Clap Skim + FZY - Buffer Lines and Project Lines
-nnoremap <Leader>i :Clap blines<CR>
-nnoremap <Leader>I :Clap lines<CR>
+"" Testing Telescope find files
+nnoremap <Leader>o <cmd>Telescope git_files recurse_submodules=true<cr>
+nnoremap <Leader>i <cmd>Telescope buffers<cr>
+nnoremap <Leader>p <cmd>Telescope live_grep<cr>
+nnoremap <Leader>t <cmd>Telescope help_tags<cr>
 
-"Clap Skim + FZY - Buffer Tags
-nnoremap <Leader>t :Clap tags<CR>
+"" Async Task/Run
+nnoremap <Leader>1 :AsyncTask file-build<CR>
+nnoremap <Leader>2 :AsyncTask file-run<CR>
 
-"Clap Skim + FZY - Registers
-nnoremap <Leader>r :Clap registers<CR>
 
-"Clap Skim + FZY - Marks
-nnoremap <Leader>m :Clap marks<CR>
-
-"Clap Skim + FZY - Marks
-nnoremap <Leader>f :Clap quickfix<CR>
-
-"Toggle Tagbar
-nmap <F12> :Vista!!<CR>
+""  Testing native LSP
+lua << EOF
+require'lspconfig'.pyright.setup{}
+require'lspconfig'.clangd.setup{}
+EOF
 
 "Open Terminal in Floating Window
 let g:floaterm_keymap_toggle = '<C-t>'
@@ -163,77 +274,5 @@ let g:floaterm_keymap_toggle = '<C-t>'
 "neovim terminal
 tnoremap <Esc> <C-\><C-N>
 
-"Capital P for pasting without overwriting register
+"" Capital P for pasting without overwriting register
 xnoremap <expr> P '"_d"'.v:register.'P'
-
-
-"""COC - COPIED FROM GITHUB EXAMPLE """
-""" WORTH REVIEWING...
-
-set statusline^=%{coc#status()}
-" Use tab for trigger completion with characters ahead and navigate.
-" Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
-inoremap <silent><expr> <TAB>
-            \ pumvisible() ? "\<C-n>" :
-            \ <SID>check_back_space() ? "\<TAB>" :
-            \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-
-"Use Tab and S-Tab to jump though snippet
-let g:coc_snippet_next = '<TAB>'
-let g:coc_snippet_prev = '<S-TAB>'
-
-function! s:check_back_space() abort
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
-" Use <c-space> for trigger completion.
-inoremap <silent><expr> <c-space> coc#refresh()
-
-" Use <cr> for confirm completion, `<C-g>u` means break undo chain at current position.
-" Coc only does snippet and additional edit on confirm.
-inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-
-" Use `[c` and `]c` for navigate diagnostics
-nmap <silent> [c <Plug>(coc-diagnostic-prev)
-nmap <silent> ]c <Plug>(coc-diagnostic-next)
-
-" Remap keys for gotos
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-
-" Use D for show documentation in preview window
-"nnoremap <silent> D :call <SID>show_documentation()<CR>
-nnoremap <C-D> :call <SID>show_documentation()<CR>
-
-function! s:show_documentation()
-    if &filetype == 'vim'
-        execute 'h '.expand('<cword>')
-    else
-        call CocAction('doHover')
-    endif
-endfunction
-
-" Remap for format selected region
-"vmap <leader>f  <Plug>(coc-format-selected)
-"nmap <leader>f  <Plug>(coc-format-selected)
-
-augroup mygroup
-    autocmd!
-    " Setup formatexpr specified filetype(s).
-    autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
-    " Update signature help on jump placeholder
-    autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
-augroup end
-
-" Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
-vmap <leader>a  <Plug>(coc-codeaction-selected)
-nmap <leader>a  <Plug>(coc-codeaction-selected)
-
-" Remap for do codeAction of current line
-nmap <leader>ac  <Plug>(coc-codeaction)
-" Fix autofix problem of current line
-nmap <leader>qf  <Plug>(coc-fix-current)
