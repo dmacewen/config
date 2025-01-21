@@ -95,7 +95,7 @@ let g:asyncrun_open = 6
 let g:asyncrun_rootmarks = ['.git', '.svn', '.root', '.project', '.hg']
 " Set Quickfix window height
 au FileType qf setlocal winheight=30
-au FileType qf setlocal winminheight=30
+" au FileType qf setlocal winminheight=30
 
 "Compe
 let g:compe = {}
@@ -257,7 +257,18 @@ nnoremap <Leader>i <cmd>Telescope buffers<cr>
 nnoremap <Leader>p <cmd>Telescope live_grep<cr>
 nnoremap <Leader>t <cmd>Telescope help_tags<cr>
 
+
+" Function to toggle quickfix window
+function! ToggleQuickFix()
+    if empty(filter(getwininfo(), 'v:val.quickfix'))
+        copen
+    else
+        cclose
+    endif
+endfunction
+
 "" Async Task/Run
+nnoremap <Leader>` :call ToggleQuickFix()<CR>
 nnoremap <Leader>1 :AsyncTask file-build<CR>
 nnoremap <Leader>2 :AsyncTask file-run<CR>
 
