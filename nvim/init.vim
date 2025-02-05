@@ -232,6 +232,20 @@ endfunc
 
 nnoremap <C-n> :call NumberToggle()<cr>
 
+" Format current buffer using clang-format
+function! FormatBuffer()
+  let cursor_pos = getpos('.')
+  :%!clang-format
+  call setpos('.', cursor_pos)
+endfunction
+
+" Map Ctrl+K to format in both normal and insert mode
+nnoremap <C-F> :call FormatBuffer()<CR>
+inoremap <C-F> <ESC>:call FormatBuffer()<CR>i
+
+" Format on save
+autocmd BufWritePre *.h,*.cc,*.cpp call FormatBuffer()
+
 """"MAPPINGS""""
 let mapleader = "\<Space>"
 nmap <C-l> :bn<CR>
@@ -257,6 +271,9 @@ nnoremap <Leader>i <cmd>Telescope buffers<cr>
 nnoremap <Leader>p <cmd>Telescope live_grep<cr>
 nnoremap <Leader>t <cmd>Telescope help_tags<cr>
 
+
+"" Make it so quickfix window doesn't show up in buffer list
+autocmd FileType qf set nobuflisted
 
 " Function to toggle quickfix window
 function! ToggleQuickFix()
