@@ -3,7 +3,6 @@ return {
     {
         'nvim-telescope/telescope.nvim',
         dependencies = {
-            'nvim-lua/popup.nvim',
             'nvim-lua/plenary.nvim',
         },
         cmd = "Telescope",
@@ -13,6 +12,21 @@ return {
             { "<leader>p", "<cmd>Telescope live_grep<cr>" },
             { "<leader>t", "<cmd>Telescope help_tags<cr>" },
         },
+        config = function()
+            require('telescope').setup({
+                defaults = {
+                    mappings = {
+                        -- Close telescope with escape
+                        i = {
+                            ["<esc>"] = require('telescope.actions').close,
+                        },
+                        n = {
+                            ["<esc>"] = require('telescope.actions').close,
+                        },
+                    },
+                },
+            })
+        end
     },
 
     -- Async Task/Run
@@ -83,42 +97,64 @@ return {
     },
     -- Git integration
     {
-        'airblade/vim-gitgutter',
-        event = { "BufReadPre", "BufNewFile" },
+        'lewis6991/gitsigns.nvim',
+        lazy = false,
+        config = function()
+            require('gitsigns').setup({
+                signs = {
+                    add          = { text = '│' },
+                    change       = { text = '│' },
+                    delete       = { text = '_' },
+                    topdelete    = { text = '‾' },
+                    changedelete = { text = '~' },
+                },
+                on_attach = function(bufnr)
+                    local gs = package.loaded.gitsigns
+                    vim.keymap.set('n', '<C-g>', gs.preview_hunk)
+                end
+            })
+        end
     },
-    {
-        'tpope/vim-fugitive',
-        cmd = { "Git", "Gstatus", "Gblame", "Gpush", "Gpull" },
-    },
-    {
-        'vim-scripts/gitignore',
-        event = { "BufReadPre", "BufNewFile" },
-    },
-
     -- Misc Tools
-    {
-        'tpope/vim-abolish',
-        event = { "BufReadPre", "BufNewFile" },
-    },
-    {
-        'junegunn/vim-slash',
-        event = { "BufReadPre", "BufNewFile" },
-    },
     {
         'github/copilot.vim',
         event = "InsertEnter",
     },
-
-    -- LSP and completion
+    -- Autocomplete
+    {
+        'saghen/blink.cmp',
+        lazy = false,
+        -- use a release tag to download pre-built binaries
+        version = '*',
+        opts = {
+            -- 'default' for mappings similar to built-in completion
+            -- 'super-tab' for mappings similar to vscode (tab to accept, arrow keys to navigate)
+            -- 'enter' for mappings similar to 'super-tab' but with 'enter' to accept
+            -- See the full "keymap" documentation for information on defining your own keymap.
+            keymap = { 
+                preset = 'super-tab',
+            },
+            appearance = {
+                nerd_font_variant = 'mono'
+            },
+            sources = {
+                default = { 'lsp', 'path', 'buffer' },
+            },
+        },
+        opts_extend = { "sources.default" }
+    },
+    -- LSP Configuratoin
     {
         'neovim/nvim-lspconfig',
-        event = { "BufReadPre", "BufNewFile" },
+        lazy=false,
+        dependencies = { 'saghen/blink.cmp' },
+        config = function()
+            local capabilities = require('blink.cmp').get_lsp_capabilities()
+            local lspconfig = require('lspconfig')
+            lspconfig.pyright.setup({ capabilities = capabilities })
+            lspconfig.clangd.setup({ capabilities = capabilities })
+        end
     },
-    {
-        'hrsh7th/nvim-compe',
-        event = "InsertEnter",
-    },
-
     -- Treesitter
     {
         'nvim-treesitter/nvim-treesitter',
