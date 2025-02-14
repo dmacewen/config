@@ -133,6 +133,16 @@ require('telescope').setup {
     },
   }
 }
+
+vim.diagnostic.config({
+  virtual_text = false,
+  float = {
+    source = "always",
+    border = "rounded",
+    show_header = false,
+  }
+})
+
 EOF
 
 
@@ -235,7 +245,7 @@ nnoremap <C-n> :call NumberToggle()<cr>
 " Format current buffer using clang-format
 function! FormatBuffer()
   let cursor_pos = getpos('.')
-  :%!clang-format
+  :%!clang-format -style=file
   call setpos('.', cursor_pos)
 endfunction
 
@@ -294,6 +304,16 @@ nnoremap <Leader>2 :AsyncTask file-run<CR>
 lua << EOF
 require'lspconfig'.pyright.setup{}
 require'lspconfig'.clangd.setup{}
+
+vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float)
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
+
+-- Map to a key like <leader>q
+-- vim.keymap.set('n', '<leader>q', vim.diagnostic.setqflist, { noremap = true, silent = true })
+-- Map to a different key like <leader>l
+vim.keymap.set('n', '<leader>l', vim.diagnostic.setloclist, { noremap = true, silent = true })
+
 EOF
 
 "Open Terminal in Floating Window
