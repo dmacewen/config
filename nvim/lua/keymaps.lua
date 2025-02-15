@@ -21,7 +21,7 @@ keymap('n', '<S-j>', ':GitGutterNextHunk<CR>zz', opts)
 keymap('n', '<S-k>', ':GitGutterPrevHunk<CR>zz', opts)
 
 -- LSP
-keymap('n', 'gd', '<C-]>', opts)
+-- keymap('n', 'gd', '<C-]>', opts)
 keymap('n', 'gi', vim.lsp.buf.implementation, opts)
 keymap('n', 'gr', vim.lsp.buf.references, opts)
 

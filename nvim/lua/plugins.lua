@@ -117,12 +117,37 @@ return {
     },
     -- Misc Tools
     {
-        'github/copilot.vim',
+        'zbirenbaum/copilot.lua',
+        cmd = "Copilot",
         event = "InsertEnter",
+        config = function()
+            require("copilot").setup({
+                suggestion = {
+                    enabled = true,
+                    auto_trigger = true,
+                    keymap = {
+                        accept = "<C-p>",
+                        accept_word = false,
+                        accept_line = false,
+                        next = "<C-]>",
+                        prev = "<C-[>",
+                        dismiss = "<Esc>",
+                    },
+                },
+            })
+        end,
     },
     -- Autocomplete
     {
         'saghen/blink.cmp',
+        dependencies = {
+            "fang2hou/blink-copilot",
+            opts = {
+                max_completions = 1,  -- Global default for max completions
+                max_attempts = 2,     -- Global default for max attempts
+                -- `kind` is not set, so the default value is "Copilot"
+            }
+        },
         lazy = false,
         -- use a release tag to download pre-built binaries
         version = '*',
@@ -138,7 +163,20 @@ return {
                 nerd_font_variant = 'mono'
             },
             sources = {
-                default = { 'lsp', 'path', 'buffer' },
+                default = { 'lsp', 'path', 'buffer', 'copilot' },
+                providers = {
+                    copilot = {
+                        name = "copilot",
+                        module = "blink-copilot",
+                        score_offset = 100,
+                        async = true,
+                        opts = {
+                            -- Local options override global ones
+                            -- Final settings: max_completions = 3, max_attempts = 2, kind = "Copilot"
+                            max_completions = 3,  -- Override global max_completions
+                        }
+                    },
+                },
             },
         },
         opts_extend = { "sources.default" }
