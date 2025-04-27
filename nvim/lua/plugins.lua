@@ -125,13 +125,14 @@ return {
                 suggestion = {
                     enabled = true,
                     auto_trigger = true,
+                    hide_during_completion = true,
                     keymap = {
-                        accept = "<C-p>",
+                        accept = "<C-l>",
                         accept_word = false,
                         accept_line = false,
                         next = "<C-]>",
                         prev = "<C-[>",
-                        dismiss = "<Esc>",
+                        dismiss = "<C-e>",
                     },
                 },
             })
@@ -236,15 +237,29 @@ return {
             'nvim-treesitter/nvim-treesitter-textobjects',
         },
     },
-
     -- Terminal
     {
-        'voldikss/vim-floaterm',
-        keys = {
-            { "<C-t>", "<cmd>FloatermToggle<cr>" },
-        },
+        'akinsho/toggleterm.nvim', 
+        version = "*", 
+        lazy=false,
+        config = function()
+            require("toggleterm").setup({
+                -- Set the terminal to float
+                direction = 'float',
+                -- Configure the floating window
+                float_opts = {
+                    border = 'curved',
+                    width = function()
+                        return math.floor(vim.o.columns * 0.8)
+                    end,
+                    height = function()
+                        return math.floor(vim.o.lines * 0.8)
+                    end,
+                },
+                open_mapping = [[<C-t>]],
+            })
+        end
     },
-
     -- Language specific
     {
         'petRUShka/vim-opencl',

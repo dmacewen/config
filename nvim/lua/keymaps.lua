@@ -7,6 +7,8 @@ local opts = { noremap = true, silent = true }
 -- General
 -- NOTE: This interferes with closing telescope and terminal windows
 -- vim.keymap.set('n', '<Esc><Esc>', ':nohlsearch<CR>', { silent = true })
+-- Stop insert with escape
+keymap('i', '<Esc>', '<cmd>stopinsert<CR>', { noremap = true })
 
 -- Buffer navigation
 keymap('n', '<C-l>', ':bn<CR>', opts)
