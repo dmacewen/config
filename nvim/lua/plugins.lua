@@ -194,6 +194,23 @@ return {
             lspconfig.clangd.setup({ capabilities = capabilities })
         end
     },
+    {
+        'stevearc/conform.nvim',
+        lazy=false,
+        config = function()
+            require('conform').setup({
+                formatters_by_ft = {
+                    -- python = { "black" },
+                    cpp = { "clang-format", lsp_format = "fallback" },
+                    c = { "clang-format", lsp_format = "fallback"  },
+                },
+                format_on_save = {
+                    timeout_ms = 500,
+                },
+            })
+        end
+
+    },
     -- Treesitter
     {
         'nvim-treesitter/nvim-treesitter',

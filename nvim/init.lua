@@ -48,16 +48,6 @@ require('config.floaterm')
 vim.g.asyncrun_open = 6
 vim.g.asyncrun_rootmarks = {'.git', '.svn', '.root', '.project', '.hg'}
 
--- Format on save for C/C++ files
-vim.api.nvim_create_autocmd("BufWritePre", {
-    pattern = {"*.h", "*.cc", "*.cpp"},
-    callback = function()
-        local cursor_pos = vim.fn.getpos('.')
-        vim.cmd([[:%!clang-format -style=file]])
-        vim.fn.setpos('.', cursor_pos)
-    end,
-})
-
 -- Function to toggle quickfix window
 _G.toggle_quickfix = function()
     local qf_exists = false
