@@ -184,6 +184,23 @@ return {
     },
     -- LSP Configuratoin
     {
+        "williamboman/mason.nvim",
+        config = function()
+            require("mason").setup()
+        end,
+    },
+    {
+        "williamboman/mason-lspconfig.nvim",
+        dependencies = { "williamboman/mason.nvim" },
+        config = function()
+            require("mason-lspconfig").setup({
+                -- A list of servers to automatically install if they're not already installed.
+                -- This setting has no effect if `automatic_installation` is false.
+                ensure_installed = { "pyright", "ruff", "clangd", "lua_ls" },
+            })
+        end,
+    },
+    {
         'neovim/nvim-lspconfig',
         lazy=false,
         dependencies = { 'saghen/blink.cmp' },
@@ -212,6 +229,31 @@ return {
                             typeCheckingMode = "standard",
                             autoImportCompletions = true,
                             autoSearchPaths = true,
+                        },
+                    },
+                },
+            })
+
+            lspconfig.lua_ls.setup({
+                capabilities = capabilities,
+                settings = {
+                    Lua = {
+                        runtime = {
+                            -- Tell the language server which version of Lua you're using (most likely LuaJIT if you're using Neovim)
+                            version = 'LuaJIT',
+                        },
+                        diagnostics = {
+                            -- Get diagnostics for defined globals
+                            globals = { 'vim' },
+                        },
+                        workspace = {
+                            -- Make the server aware of Neovim runtime files
+                            library = vim.api.nvim_get_runtime_file("", true),
+                            checkThirdParty = false, -- Avoid issues with sumneko_lua finding itself if you have it installed elsewhere
+                        },
+                        -- Do not send telemetry data containing a randomized machine name
+                        telemetry = {
+                            enable = false,
                         },
                     },
                 },
