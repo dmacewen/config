@@ -26,6 +26,8 @@ keymap('n', '<S-k>', ':GitGutterPrevHunk<CR>zz', opts)
 -- keymap('n', 'gd', '<C-]>', opts)
 keymap('n', 'gi', vim.lsp.buf.implementation, opts)
 keymap('n', 'gr', vim.lsp.buf.references, opts)
+keymap('n', '<C-f>', '<cmd>lua vim.lsp.buf.hover()<CR>', { noremap = true, silent = true })
+
 
 -- Terminal
 keymap('t', '<Esc>', '<C-\\><C-N>', opts)

@@ -190,7 +190,33 @@ return {
         config = function()
             local capabilities = require('blink.cmp').get_lsp_capabilities()
             local lspconfig = require('lspconfig')
-            lspconfig.pyright.setup({ capabilities = capabilities })
+
+            lspconfig.ruff.setup({ 
+                capabilities = capabilities,
+                on_attach = function(client, bufnr)
+                    -- Disable default formatting
+                    client.server_capabilities.document_formatting = false
+                    client.server_capabilities.document_range_formatting = false
+                end,
+            })
+
+            lspconfig.pyright.setup({ 
+                capabilities = capabilities,
+                settings = {
+                    pyright = {
+                        -- Using Ruff's import organizer
+                        disableOrganizeImports = true,
+                    },
+                    python = {
+                        analysis = {
+                            typeCheckingMode = "standard",
+                            autoImportCompletions = true,
+                            autoSearchPaths = true,
+                        },
+                    },
+                },
+            })
+
             lspconfig.clangd.setup({ capabilities = capabilities })
         end
     },
@@ -200,7 +226,7 @@ return {
         config = function()
             require('conform').setup({
                 formatters_by_ft = {
-                    -- python = { "black" },
+                    python = { "ruff_format", "ruff_fix", lsp_format = "fallback" },
                     cpp = { "clang-format", lsp_format = "fallback" },
                     c = { "clang-format", lsp_format = "fallback"  },
                 },
@@ -290,5 +316,36 @@ return {
         'cespare/vim-toml',
         ft = "toml",
     },
+    {
+        "elixir-tools/elixir-tools.nvim",
+        version = "*",
+        event = { "BufReadPre", "BufNewFile" },
+        config = function()
+            local elixir = require("elixir")
+            local elixirls = require("elixir.elixirls")
+
+            elixir.setup {
+                nextls = {enable = true},
+                elixirls = {
+                    enable = true,
+                    settings = elixirls.settings {
+                        dialyzerEnabled = false,
+                        enableTestLenses = false,
+                    },
+                    on_attach = function(client, bufnr)
+                        vim.keymap.set("n", "<space>fp", ":ElixirFromPipe<cr>", { buffer = true, noremap = true })
+                        vim.keymap.set("n", "<space>tp", ":ElixirToPipe<cr>", { buffer = true, noremap = true })
+                        vim.keymap.set("v", "<space>em", ":ElixirExpandMacro<cr>", { buffer = true, noremap = true })
+                    end,
+                },
+                projectionist = {
+                    enable = false
+                }
+            }
+        end,
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+        },
+    }
 }
 

@@ -8,6 +8,9 @@ require('nvim-treesitter.configs').setup({
         "javascript",
         "typescript",
         "rust",
+        "elixir",
+        "eex", -- Elixir EEx
+        "heex", -- Elixir HEEx
     },
 
     -- Enable syntax highlighting
