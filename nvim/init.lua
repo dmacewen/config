@@ -39,8 +39,6 @@ require('keymaps')
 
 -- Load plugin configurations
 require('config.lsp')
-require('config.telescope')
-require('config.treesitter')
 require('config.appearance')
 require('config.floaterm')
 
