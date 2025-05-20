@@ -152,6 +152,10 @@ return {
             "nvim-telescope/telescope.nvim", -- optional
         },
         config = function()
+            require('neogit').setup {
+                kind = "floating"
+            }
+
             vim.keymap.set("n", "<leader>g", "<cmd>Neogit<CR>", { desc = "Open Neogit" })
         end,
     },
