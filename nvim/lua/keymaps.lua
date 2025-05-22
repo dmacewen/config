@@ -22,10 +22,15 @@ keymap('n', '<C-k>', '10kzz', opts)
 keymap('n', '<S-j>', ':GitGutterNextHunk<CR>zz', opts)
 keymap('n', '<S-k>', ':GitGutterPrevHunk<CR>zz', opts)
 
+-- Swap <C-i> and <C-o> to map to forward and backward jump
+keymap('n', '<C-i>', '<C-o>', opts)
+keymap('n', '<C-o>', '<C-i>', opts)
+
 -- LSP
 -- keymap('n', 'gd', '<C-]>', opts)
-keymap('n', 'gi', vim.lsp.buf.implementation, opts)
-keymap('n', 'gr', vim.lsp.buf.references, opts)
+keymap('n', 'gi', "<cmd>Telescope lsp_implementations<CR>", opts)
+keymap('n', 'gr', "<cmd>Telescope lsp_references<CR>", opts)
+keymap('n', 'gd', "<cmd>Telescope lsp_definitions<CR>", opts)
 keymap('n', '<C-f>', '<cmd>lua vim.lsp.buf.hover()<CR>', { noremap = true, silent = true })
 
 

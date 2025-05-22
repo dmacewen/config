@@ -26,10 +26,11 @@ return {
         },
         cmd = "Telescope",
         keys = {
-            { "<leader>o", "<cmd>Telescope git_files recurse_submodules=true<cr>" },
+            { "<leader>o", "<cmd>Telescope git_files recurse_submodules=true<cr>" }, -- "leader OPEN"
             { "<leader>i", "<cmd>Telescope buffers<cr>" },
             { "<leader>p", "<cmd>Telescope live_grep<cr>" },
-            { "<leader>t", "<cmd>Telescope help_tags<cr>" },
+            { "<leader>t", "<cmd>Telescope lsp_document_symbols<cr>" }, -- "leader TAG"
+            { "<leader>f", "<cmd>Telescope diagnostics<cr>" }, -- "leader FIX"
         },
         config = function()
             require('telescope').setup({
@@ -120,6 +121,11 @@ return {
                 extensions = {'fugitive', 'nvim-tree'}
             })
         end
+    },
+    {
+        "nvim-treesitter/nvim-treesitter-context",
+        lazy = false,
+        opts = {}
     },
     -- Git integration
     {
