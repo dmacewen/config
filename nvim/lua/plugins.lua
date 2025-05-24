@@ -261,15 +261,12 @@ return {
         end,
         event = "VeryLazy",
         keys = {
-            -- Chat with Copilot in visual mode
-            {
-                "<leader>a",
-                ":CopilotChatVisual",
-                mode = "x",
-                desc = "CopilotChat - Open in vertical split",
-            },
             -- Toggle Copilot Chat Vsplit
-            { "<leader>a", "<cmd>CopilotChatToggle<cr>", desc = "CopilotChat - Toggle" },
+            {
+                "<C-a>",
+                ":<C-u>CopilotChatToggle<cr>",
+                desc = "CopilotChat - Toggle"
+            },
         },
     },
     -- Autocomplete

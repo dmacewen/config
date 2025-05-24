@@ -14,3 +14,8 @@ ibus/*
 pulse/*
 user-dirs.dirs
 user-dirs.locale
+
+.DS_Store
+
+gcloud/*
+github-copilot/*
