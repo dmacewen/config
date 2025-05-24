@@ -29,7 +29,7 @@ return {
             { "<leader>o", "<cmd>Telescope git_files recurse_submodules=true<cr>" }, -- "leader OPEN"
             { "<leader>i", "<cmd>Telescope buffers<cr>" },
             { "<leader>p", "<cmd>Telescope live_grep<cr>" },
-            { "<leader>t", "<cmd>Telescope lsp_document_symbols<cr>" }, -- "leader TAG"
+            { "<leader>t", "<cmd>Telescope aerial<cr>" }, -- "leader TAG"
             { "<leader>f", "<cmd>Telescope diagnostics<cr>" }, -- "leader FIX"
         },
         config = function()
@@ -55,7 +55,14 @@ return {
             })
         end
     },
-
+    {
+        'stevearc/aerial.nvim',
+        opts = {},
+        dependencies = {
+            "nvim-treesitter/nvim-treesitter",
+            "nvim-tree/nvim-web-devicons"
+        },
+    },
     -- Async Task/Run
     {
         'skywind3000/asynctasks.vim',
