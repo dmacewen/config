@@ -1,3 +1,6 @@
+-- Only log errors to prevent lsp.log from growing unbounded
+vim.lsp.set_log_level('ERROR')
+
 -- Diagnostic configuration
 vim.diagnostic.config({
     virtual_text = false,
