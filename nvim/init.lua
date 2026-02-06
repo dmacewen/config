@@ -1,8 +1,9 @@
--- Generated with the help of Claude 3.5 Sonet
 -- Plugin Manager
+vim.g.mapleader = " "
 require("config.lazy")
 
-vim.g.mapleader = " "
+-- Disable default <C-a> mapping in normal mode
+vim.api.nvim_set_keymap('n', '<C-a>', '', { noremap = true })
 
 -- Initialize lazy.nvim
 require('lazy').setup('plugins', {
@@ -40,11 +41,6 @@ require('keymaps')
 -- Load plugin configurations
 require('config.lsp')
 require('config.appearance')
-require('config.floaterm')
-
--- Async Task/Run settings
-vim.g.asyncrun_open = 6
-vim.g.asyncrun_rootmarks = {'.git', '.svn', '.root', '.project', '.hg'}
 
 -- Function to toggle quickfix window
 _G.toggle_quickfix = function()
@@ -63,5 +59,3 @@ end
 
 -- Quickfix toggle mapping
 vim.keymap.set('n', '<Leader>`', toggle_quickfix, {noremap = true, silent = true})
-
-

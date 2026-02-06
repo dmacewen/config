@@ -18,57 +18,13 @@ local ai_assistant_prompts = {
 }
 
 return {
-    -- Telescope and dependencies
+    -- Task Runner
     {
-        'nvim-telescope/telescope.nvim',
-        dependencies = {
-            'nvim-lua/plenary.nvim',
-        },
-        cmd = "Telescope",
-        keys = {
-            { "<leader>o", "<cmd>Telescope git_files recurse_submodules=true<cr>" }, -- "leader OPEN"
-            { "<leader>i", "<cmd>Telescope buffers<cr>" },
-            { "<leader>p", "<cmd>Telescope live_grep<cr>" },
-            { "<leader>t", "<cmd>Telescope aerial<cr>" }, -- "leader TAG"
-            { "<leader>f", "<cmd>Telescope diagnostics<cr>" }, -- "leader FIX"
-        },
-        config = function()
-            require('telescope').setup({
-                defaults = {
-                    mappings = {
-                        -- Close telescope with escape
-                        i = {
-                            ["<esc>"] = require('telescope.actions').close,
-                            ["<C-j>"] = "move_selection_next",
-                            ["<C-k>"] = "move_selection_previous",
-                        },
-                        n = {
-                            ["<esc>"] = require('telescope.actions').close,
-                        },
-                    },
-                    pickers = {
-                        git_files = {
-                            recurse_submodules = true,
-                        },
-                    },
-                },
-            })
-        end
-    },
-    {
-        'stevearc/aerial.nvim',
-        opts = {},
-        dependencies = {
-            "nvim-treesitter/nvim-treesitter",
-            "nvim-tree/nvim-web-devicons"
-        },
-    },
-    -- Async Task/Run
-    {
-        'skywind3000/asynctasks.vim',
-        dependencies = { 'skywind3000/asyncrun.vim' },
-        cmd = { "AsyncTask", "AsyncRun" },
+        'stevearc/overseer.nvim',
         lazy = false,
+        config = function()
+            require('overseer').setup()
+        end,
     },
 
     -- Appearance
@@ -120,7 +76,7 @@ return {
                 sections = {
                     lualine_a = {'mode'},
                     lualine_b = {'branch', 'diff', 'diagnostics'},
-                    lualine_c = {'filename'},
+                    lualine_c = {{'filename', path = 1}},
                     lualine_x = {'encoding', 'fileformat', 'filetype'},
                     lualine_y = {'progress'},
                     lualine_z = {'location'}
@@ -133,6 +89,36 @@ return {
         "nvim-treesitter/nvim-treesitter-context",
         lazy = false,
         opts = {}
+    },
+    {
+        "folke/snacks.nvim",
+        lazy = false,
+        ---@type snacks.Config
+        opts = {
+            indent = {
+                enabled = true,
+                animate = { enabled = false },
+                scope = { enabled = false },
+            },
+            picker = {
+                enabled = true,
+                win = {
+                    input = {
+                        keys = {
+                            ["<Esc>"] = { "close", mode = { "n", "i" } },
+                            ["<C-j>"] = { "list_down", mode = { "i" } },
+                            ["<C-k>"] = { "list_up", mode = { "i" } },
+                        },
+                    },
+                },
+            },
+        },
+        keys = {
+            { "<leader>o", function() Snacks.picker.files() end, desc = "Find files" },
+            { "<leader>i", function() Snacks.picker.buffers() end, desc = "Buffers" },
+            { "<leader>p", function() Snacks.picker.grep() end, desc = "Grep" },
+            { "<leader>f", function() Snacks.picker.diagnostics() end, desc = "Diagnostics" },
+        },
     },
     -- Git integration
     {
@@ -149,7 +135,9 @@ return {
                 },
                 on_attach = function(bufnr)
                     local gs = package.loaded.gitsigns
-                    vim.keymap.set('n', '<C-g>', gs.preview_hunk)
+                    vim.keymap.set('n', '<C-g>', gs.preview_hunk, { buffer = bufnr })
+                    vim.keymap.set('n', '<S-j>', function() gs.nav_hunk('next') vim.cmd('normal! zz') end, { buffer = bufnr })
+                    vim.keymap.set('n', '<S-k>', function() gs.nav_hunk('prev') vim.cmd('normal! zz') end, { buffer = bufnr })
                 end
             })
         end
@@ -160,9 +148,6 @@ return {
         dependencies = {
             "nvim-lua/plenary.nvim",         -- required
             "sindrets/diffview.nvim",        -- optional - Diff integration
-
-            -- Only one of these is needed.
-            "nvim-telescope/telescope.nvim", -- optional
         },
         config = function()
             require('neogit').setup {
@@ -172,121 +157,33 @@ return {
             vim.keymap.set("n", "<leader>g", "<cmd>Neogit<CR>", { desc = "Open Neogit" })
         end,
     },
-    -- Misc Tools
     {
-        'zbirenbaum/copilot.lua',
-        cmd = "Copilot",
-        event = "InsertEnter",
-        config = function()
-            require("copilot").setup({
-                suggestion = {
-                    enabled = true,
-                    auto_trigger = true,
-                    hide_during_completion = true,
-                    keymap = {
-                        accept = "<C-l>",
-                        accept_word = false,
-                        accept_line = false,
-                        next = "<C-]>",
-                        prev = "<C-[>",
-                        dismiss = "<C-e>",
-                    },
-                },
-            })
-        end,
-    },
-    {
-        "CopilotC-Nvim/CopilotChat.nvim",
-        lazy = true,
-        dependencies = {
-            { 'zbirenbaum/copilot.lua' },
-            { "nvim-lua/plenary.nvim", branch = "master" }, -- for curl, log and async functions
-        },
-        build = "make tiktoken", -- Only on MacOS or Linux
-        opts = {
-            question_header = "## User ",
-            answer_header = "## Copilot ",
-            error_header = "## Error ",
-            prompts = ai_assistant_prompts,
-            -- model = "claude-3.7-sonnet",
-            -- model = "gemini-2.5-pro",
-            mappings = {
-                -- Use tab for completion
-                complete = {
-                    detail = "Use @<Tab> or /<Tab> for options.",
-                    insert = "<Tab>",
-                },
-                -- Close the chat
-                close = {
-                    normal = "q",
-                    insert = "<C-c>",
-                },
-                -- Reset the chat buffer
-                reset = {
-                    normal = "<C-x>",
-                    insert = "<C-x>",
-                },
-                -- Submit the prompt to Copilot
-                submit_prompt = {
-                    normal = "<CR>",
-                    insert = "<C-CR>",
-                },
-                -- Accept the diff
-                accept_diff = {
-                    normal = "<C-y>",
-                    insert = "<C-y>",
-                },
-                -- Show help
-                show_help = {
-                    normal = "g?",
-                },
-            },
-        },
-        config = function(_, opts)
-            local chat = require("CopilotChat")
-            chat.setup(opts)
-
-            local select = require("CopilotChat.select")
-            vim.api.nvim_create_user_command("CopilotChatVisual", function(args)
-                chat.ask(args.args, { selection = select.visual })
-            end, { nargs = "*", range = true })
-
-            -- Custom buffer for CopilotChat
-            vim.api.nvim_create_autocmd("BufEnter", {
-                pattern = "copilot-*",
-                callback = function()
-                    vim.opt_local.relativenumber = true
-                    vim.opt_local.number = true
-
-                    -- Get current filetype and set it to markdown if the current filetype is copilot-chat
-                    local ft = vim.bo.filetype
-                    if ft == "copilot-chat" then
-                        vim.bo.filetype = "markdown"
-                    end
-                end,
-            })
-        end,
-        event = "VeryLazy",
+        "coder/claudecode.nvim",
+        dependencies = { "folke/snacks.nvim" },
+        config = true,
         keys = {
-            -- Toggle Copilot Chat Vsplit
+            { "<leader>a", nil, desc = "AI/Claude Code" },
+            { "<leader>ac", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude" },
+            { "<leader>af", "<cmd>ClaudeCodeFocus<cr>", desc = "Focus Claude" },
+            { "<leader>ar", "<cmd>ClaudeCode --resume<cr>", desc = "Resume Claude" },
+            { "<leader>aC", "<cmd>ClaudeCode --continue<cr>", desc = "Continue Claude" },
+            { "<leader>am", "<cmd>ClaudeCodeSelectModel<cr>", desc = "Select Claude model" },
+            { "<leader>ab", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add current buffer" },
+            { "<leader>as", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Send to Claude" },
             {
-                "<C-a>",
-                ":<C-u>CopilotChatToggle<cr>",
-                desc = "CopilotChat - Toggle"
+                "<leader>as",
+                "<cmd>ClaudeCodeTreeAdd<cr>",
+                desc = "Add file",
+                ft = { "NvimTree", "neo-tree", "oil", "minifiles" },
             },
+            -- Diff management
+            { "<leader>aa", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "Accept diff" },
+            { "<leader>ad", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "Deny diff" },
         },
     },
     -- Autocomplete
     {
         'saghen/blink.cmp',
-        dependencies = {
-            "fang2hou/blink-copilot",
-            opts = {
-                max_completions = 1,  -- Global default for max completions
-                max_attempts = 2,     -- Global default for max attempts
-                -- `kind` is not set, so the default value is "Copilot"
-            }
-        },
         lazy = false,
         -- use a release tag to download pre-built binaries
         version = '*',
@@ -295,34 +192,31 @@ return {
             -- 'super-tab' for mappings similar to vscode (tab to accept, arrow keys to navigate)
             -- 'enter' for mappings similar to 'super-tab' but with 'enter' to accept
             -- See the full "keymap" documentation for information on defining your own keymap.
-            keymap = { 
+            keymap = {
                 preset = 'super-tab',
+                ['<C-j>'] = { 'select_next' },
+                ['<C-k>'] = { 'select_prev' },
+                ['<C-l>'] = { 'accept' }, -- Use Ctrl+l to accept completion
+                ['<C-h>'] = { 'hide' }, -- Use Ctrl+h to dismiss completion
             },
             appearance = {
                 nerd_font_variant = 'mono'
             },
-            sources = {
-                default = { 'lsp', 'path', 'buffer', 'copilot' },
-                providers = {
-                    copilot = {
-                        name = "copilot",
-                        module = "blink-copilot",
-                        score_offset = 100,
-                        async = true,
-                        opts = {
-                            -- Local options override global ones
-                            -- Final settings: max_completions = 3, max_attempts = 2, kind = "Copilot"
-                            max_completions = 3,  -- Override global max_completions
-                        }
+            completion = {
+                documentation = { auto_show = true },
+                ghost_text = { enabled = true },
+                accept = {
+                    auto_brackets = {
+                        enabled = false,
                     },
-                },
+                    snippet = false, -- Disable snippet expansion on accept
+                }
             },
-            -- enabled = function()
-            --     -- Disable in copilot-chat buffers
-            --     return vim.bo.filetype ~= "copilot-chat"
-            -- end,
+            sources = {
+                default = { 'lsp', 'path', 'buffer' },
+            },
             -- Disable completion for these files
-            enabled = function() return not vim.tbl_contains({ "copilot-chat", "markdown" }, vim.bo.filetype) end,
+            enabled = function() return not vim.tbl_contains({ "markdown" }, vim.bo.filetype) end,
         },
         opts_extend = { "sources.default" }
     },
@@ -348,26 +242,26 @@ return {
     },
     {
         'neovim/nvim-lspconfig',
-        lazy=false,
+        lazy = false,
         dependencies = { 'saghen/blink.cmp' },
         config = function()
-            local capabilities = require('blink.cmp').get_lsp_capabilities()
-            local lspconfig = require('lspconfig')
+            -- Set blink.cmp capabilities for all servers
+            vim.lsp.config('*', {
+                capabilities = require('blink.cmp').get_lsp_capabilities(),
+            })
 
-            lspconfig.ruff.setup({ 
-                capabilities = capabilities,
+            -- Ruff: disable formatting (handled by conform.nvim)
+            vim.lsp.config('ruff', {
                 on_attach = function(client, bufnr)
-                    -- Disable default formatting
-                    client.server_capabilities.document_formatting = false
-                    client.server_capabilities.document_range_formatting = false
+                    client.server_capabilities.documentFormattingProvider = false
+                    client.server_capabilities.documentRangeFormattingProvider = false
                 end,
             })
 
-            lspconfig.pyright.setup({ 
-                capabilities = capabilities,
+            -- Pyright: use Ruff for import organizing
+            vim.lsp.config('pyright', {
                 settings = {
                     pyright = {
-                        -- Using Ruff's import organizer
                         disableOrganizeImports = true,
                     },
                     python = {
@@ -380,33 +274,23 @@ return {
                 },
             })
 
-            lspconfig.lua_ls.setup({
-                capabilities = capabilities,
+            -- Lua LS: configure for Neovim development
+            vim.lsp.config('lua_ls', {
                 settings = {
                     Lua = {
-                        runtime = {
-                            -- Tell the language server which version of Lua you're using (most likely LuaJIT if you're using Neovim)
-                            version = 'LuaJIT',
-                        },
-                        diagnostics = {
-                            -- Get diagnostics for defined globals
-                            globals = { 'vim' },
-                        },
+                        runtime = { version = 'LuaJIT' },
+                        diagnostics = { globals = { 'vim' } },
                         workspace = {
-                            -- Make the server aware of Neovim runtime files
                             library = vim.api.nvim_get_runtime_file("", true),
-                            checkThirdParty = false, -- Avoid issues with sumneko_lua finding itself if you have it installed elsewhere
+                            checkThirdParty = false,
                         },
-                        -- Do not send telemetry data containing a randomized machine name
-                        telemetry = {
-                            enable = false,
-                        },
+                        telemetry = { enable = false },
                     },
                 },
             })
 
-            lspconfig.clangd.setup({ capabilities = capabilities })
-        end
+            vim.lsp.enable({ 'ruff', 'pyright', 'lua_ls', 'clangd' })
+        end,
     },
     {
         'stevearc/conform.nvim',
@@ -467,9 +351,6 @@ return {
                 },
             })
         end,
-        dependencies = {
-            'nvim-treesitter/nvim-treesitter-textobjects',
-        },
     },
     -- Terminal
     {
@@ -498,14 +379,6 @@ return {
     {
         'petRUShka/vim-opencl',
         ft = "opencl",
-    },
-    {
-        'shime/vim-livedown',
-        ft = "markdown",
-    },
-    {
-        'cespare/vim-toml',
-        ft = "toml",
     },
     {
         "elixir-tools/elixir-tools.nvim",
@@ -541,7 +414,7 @@ return {
     },
     {
         'MeanderingProgrammer/render-markdown.nvim',
-        ft = { "markdown", "copilot-chat" },
+        ft = { "markdown" },
         dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
         ---@module 'render-markdown'
         ---@type render.md.UserConfig
