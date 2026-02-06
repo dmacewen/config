@@ -42,20 +42,5 @@ require('keymaps')
 require('config.lsp')
 require('config.appearance')
 
--- Function to toggle quickfix window
-_G.toggle_quickfix = function()
-    local qf_exists = false
-    for _, win in pairs(vim.fn.getwininfo()) do
-        if win.quickfix == 1 then
-            qf_exists = true
-        end
-    end
-    if qf_exists then
-        vim.cmd('cclose')
-    else
-        vim.cmd('copen')
-    end
-end
-
--- Quickfix toggle mapping
-vim.keymap.set('n', '<Leader>`', toggle_quickfix, {noremap = true, silent = true})
+-- Overseer task output toggle
+vim.keymap.set('n', '<Leader>`', '<cmd>OverseerToggle<CR>', {noremap = true, silent = true})

@@ -95,10 +95,25 @@ return {
         lazy = false,
         ---@type snacks.Config
         opts = {
+            bigfile = { enabled = true },
+            quickfile = { enabled = true },
+            notifier = { enabled = true },
+            input = { enabled = true },
+            words = { enabled = true },
             indent = {
                 enabled = true,
                 animate = { enabled = false },
                 scope = { enabled = false },
+            },
+            bufdelete = { enabled = true },
+            terminal = {
+                enabled = true,
+                win = {
+                    style = "float",
+                    border = "rounded",
+                    width = 0.8,
+                    height = 0.8,
+                },
             },
             picker = {
                 enabled = true,
@@ -118,6 +133,7 @@ return {
             { "<leader>i", function() Snacks.picker.buffers() end, desc = "Buffers" },
             { "<leader>p", function() Snacks.picker.grep() end, desc = "Grep" },
             { "<leader>f", function() Snacks.picker.diagnostics() end, desc = "Diagnostics" },
+            { "<C-t>", function() Snacks.terminal.toggle() end, desc = "Toggle terminal", mode = { "n", "t" } },
         },
     },
     -- Git integration
@@ -351,29 +367,6 @@ return {
                 },
             })
         end,
-    },
-    -- Terminal
-    {
-        'akinsho/toggleterm.nvim', 
-        version = "*", 
-        lazy=false,
-        config = function()
-            require("toggleterm").setup({
-                -- Set the terminal to float
-                direction = 'float',
-                -- Configure the floating window
-                float_opts = {
-                    border = 'curved',
-                    width = function()
-                        return math.floor(vim.o.columns * 0.8)
-                    end,
-                    height = function()
-                        return math.floor(vim.o.lines * 0.8)
-                    end,
-                },
-                open_mapping = [[<C-t>]],
-            })
-        end
     },
     -- Language specific
     {

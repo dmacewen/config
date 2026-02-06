@@ -18,6 +18,13 @@ vim.opt.completeopt = 'menuone,noselect'
 vim.g.python3_host_prog = '/usr/local/bin/python3'
 vim.g.python_host_prog = '/usr/bin/python2'
 
+-- Exclude terminal buffers from buffer list
+vim.api.nvim_create_autocmd('TermOpen', {
+    callback = function()
+        vim.opt_local.buflisted = false
+    end
+})
+
 -- Quickfix settings
 vim.api.nvim_create_autocmd('FileType', {
     pattern = 'qf',

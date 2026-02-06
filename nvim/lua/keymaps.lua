@@ -11,6 +11,8 @@ keymap('i', '<Esc>', '<cmd>stopinsert<CR>', { noremap = true })
 -- Buffer navigation
 keymap('n', '<C-l>', ':bn<CR>', opts)
 keymap('n', '<C-h>', ':bp<CR>', opts)
+vim.api.nvim_create_user_command('Bw', function() Snacks.bufdelete() end, {})
+vim.cmd('cabbrev bw Bw')
 
 -- Jump 10 lines
 keymap('n', '<C-j>', '10jzz', opts)
@@ -30,5 +32,26 @@ keymap('n', '<C-f>', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
 keymap('t', '<Esc>', '<C-\\><C-N>', opts)
 
 -- Overseer task mappings
-keymap('n', '<Leader>1', '<cmd>OverseerRun<CR>', opts)
-keymap('n', '<Leader>2', '<cmd>OverseerToggle<CR>', opts)
+local function run_task_by_index(index)
+    local tasks_file = vim.fn.getcwd() .. '/.vscode/tasks.json'
+    local file = io.open(tasks_file, 'r')
+    if not file then
+        vim.notify('No .vscode/tasks.json found', vim.log.levels.WARN)
+        return
+    end
+    local content = file:read('*a')
+    file:close()
+    local ok, data = pcall(vim.json.decode, content)
+    if not ok or not data.tasks or not data.tasks[index] then
+        vim.notify('Task ' .. index .. ' not found', vim.log.levels.WARN)
+        return
+    end
+    local overseer = require('overseer')
+    overseer.open()
+    overseer.run_task({ name = data.tasks[index].label })
+end
+
+for i = 1, 9 do
+    keymap('n', '<Leader>' .. i, function() run_task_by_index(i) end, opts)
+end
+keymap('n', '<Leader>0', '<cmd>OverseerRun<CR>', opts)
