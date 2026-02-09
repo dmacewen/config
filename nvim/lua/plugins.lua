@@ -133,7 +133,9 @@ return {
             { "<leader>i", function() Snacks.picker.buffers() end, desc = "Buffers" },
             { "<leader>p", function() Snacks.picker.grep() end, desc = "Grep" },
             { "<leader>f", function() Snacks.picker.diagnostics() end, desc = "Diagnostics" },
-            { "<C-t>", function() Snacks.terminal.toggle() end, desc = "Toggle terminal", mode = { "n", "t" } },
+            { "<C-1>", function() Snacks.terminal.toggle() end, desc = "Toggle terminal", mode = { "n", "t" } },
+            { "<C-2>", function() Snacks.terminal.toggle("adb shell") end, desc = "ADB shell", mode = { "n", "t" } },
+            { "<C-3>", function() Snacks.terminal.toggle('rogcat -t "Gls"') end, desc = "Rogcat logs", mode = { "n", "t" } },
         },
     },
     -- Git integration
@@ -152,8 +154,8 @@ return {
                 on_attach = function(bufnr)
                     local gs = package.loaded.gitsigns
                     vim.keymap.set('n', '<C-g>', gs.preview_hunk, { buffer = bufnr })
-                    vim.keymap.set('n', '<S-j>', function() gs.nav_hunk('next') vim.cmd('normal! zz') end, { buffer = bufnr })
-                    vim.keymap.set('n', '<S-k>', function() gs.nav_hunk('prev') vim.cmd('normal! zz') end, { buffer = bufnr })
+                    vim.keymap.set('n', '<Leader>j', function() gs.nav_hunk('next') vim.cmd('normal! zz') end, { buffer = bufnr })
+                    vim.keymap.set('n', '<Leader>k', function() gs.nav_hunk('prev') vim.cmd('normal! zz') end, { buffer = bufnr })
                 end
             })
         end

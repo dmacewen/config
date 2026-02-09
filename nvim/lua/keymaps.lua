@@ -9,14 +9,14 @@ local opts = { noremap = true, silent = true }
 keymap('i', '<Esc>', '<cmd>stopinsert<CR>', { noremap = true })
 
 -- Buffer navigation
-keymap('n', '<C-l>', ':bn<CR>', opts)
-keymap('n', '<C-h>', ':bp<CR>', opts)
+keymap('n', '<S-l>', ':bn<CR>', opts)
+keymap('n', '<S-h>', ':bp<CR>', opts)
 vim.api.nvim_create_user_command('Bw', function() Snacks.bufdelete() end, {})
 vim.cmd('cabbrev bw Bw')
 
 -- Jump 10 lines
-keymap('n', '<C-j>', '10jzz', opts)
-keymap('n', '<C-k>', '10kzz', opts)
+keymap('n', '<S-j>', '10jzz', opts)
+keymap('n', '<S-k>', '10kzz', opts)
 
 -- Swap <C-i> and <C-o> to map to forward and backward jump
 keymap('n', '<C-i>', '<C-o>', opts)

@@ -1,0 +1,11 @@
+# Pane navigation (performable: passes key through when no split exists in that direction)
+keybind = performable:ctrl+h=goto_split:left
+keybind = performable:ctrl+j=goto_split:bottom
+keybind = performable:ctrl+k=goto_split:top
+keybind = performable:ctrl+l=goto_split:right
+
+# Split creation / management
+keybind = cmd+d=new_split:right
+keybind = cmd+shift+d=new_split:down
+keybind = cmd+shift+enter=toggle_split_zoom
+keybind = cmd+shift+equal=equalize_splits
