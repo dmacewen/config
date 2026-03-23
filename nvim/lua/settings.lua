@@ -1,4 +1,5 @@
 -- Basic settings
+vim.opt.autoread = true
 vim.opt.number = true
 vim.opt.hidden = true
 vim.opt.tabstop = 4

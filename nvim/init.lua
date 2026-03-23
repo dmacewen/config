@@ -42,5 +42,9 @@ require('keymaps')
 require('config.lsp')
 require('config.appearance')
 
+-- Auto-reload buffers when files change on disk
+require('config.directory-watcher').setup({ path = vim.fn.getcwd() })
+require('config.hotreload').setup()
+
 -- Overseer task output toggle
 vim.keymap.set('n', '<Leader>`', '<cmd>OverseerToggle<CR>', {noremap = true, silent = true})

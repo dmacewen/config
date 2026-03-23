@@ -31,6 +31,13 @@ keymap('n', '<C-f>', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
 -- Terminal
 keymap('t', '<Esc>', '<C-\\><C-N>', opts)
 
+-- Yank with file context (for pasting into Claude Code)
+local yank = require('config.yank')
+keymap('n', '<Leader>yr', function() yank.yank_path(yank.get_buffer_cwd_relative(), 'relative') end, opts)
+keymap('n', '<Leader>ya', function() yank.yank_path(yank.get_buffer_absolute(), 'absolute') end, opts)
+keymap('v', '<Leader>yr', function() yank.yank_visual_with_path(yank.get_buffer_cwd_relative(), 'relative') end, opts)
+keymap('v', '<Leader>ya', function() yank.yank_visual_with_path(yank.get_buffer_absolute(), 'absolute') end, opts)
+
 -- Overseer task mappings
 local function run_task_by_index(index)
     local tasks_file = vim.fn.getcwd() .. '/.vscode/tasks.json'
