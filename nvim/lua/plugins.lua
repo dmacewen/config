@@ -132,6 +132,7 @@ return {
             { "<leader>o", function() Snacks.picker.files() end, desc = "Find files" },
             { "<leader>i", function() Snacks.picker.buffers() end, desc = "Buffers" },
             { "<leader>p", function() Snacks.picker.grep() end, desc = "Grep" },
+            { "<leader>s", function() Snacks.picker.lsp_symbols() end, desc = "Document symbols" },
             { "<leader>f", function() Snacks.picker.diagnostics() end, desc = "Diagnostics" },
             { "<C-1>", function() Snacks.terminal.toggle() end, desc = "Toggle terminal", mode = { "n", "t" } },
             { "<C-2>", function() Snacks.terminal.toggle("adb shell") end, desc = "ADB shell", mode = { "n", "t" } },
